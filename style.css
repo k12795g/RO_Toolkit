@@ -1,0 +1,93 @@
+body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f5f3f1;
+            color: #4a4a4a;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 1.5rem;
+            transition: all 0.3s ease-in-out;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid transparent;
+        }
+        .btn-primary {
+            background-color: #8d7b68;
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #7a6a58;
+        }
+        .btn-active {
+            background-color: #a4907c;
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+            transform: translateY(-2px);
+        }
+        input[type="number"] {
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #a4907c;
+            box-shadow: 0 0 0 2px rgba(164, 144, 124, 0.2);
+        }
+        .material-input-group label {
+            transition: color 0.2s ease-in-out, font-weight 0.2s ease-in-out;
+        }
+        .material-input-group input {
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+        }
+        .material-input-group.highlighted label {
+            color: #8d7b68;
+            font-weight: 700;
+        }
+        .material-input-group.highlighted input {
+            border-color: #a4907c;
+            box-shadow: 0 0 0 2px rgba(164, 144, 124, 0.2);
+            background-color: #fefbf8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+         @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #ffffff;
+            border: 2px solid #8d7b68;
+            cursor: pointer;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 10;
+            transform: translateX(-50%);
+            top: 50%;
+            margin-top: -10px;
+        }
+        .slider-thumb:focus {
+             outline: none;
+             box-shadow: 0 0 0 4px rgba(164, 144, 124, 0.3);
+        }

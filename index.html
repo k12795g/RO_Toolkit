@@ -9,105 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals -->
-    <!-- Application Structure Plan: A task-oriented single-page calculator. The structure is designed for a direct user flow: 1. Input material prices (global settings). 2. Select specific enchantment goals (cluster/level). 3. View immediate results (summary, details, visualization). This is more efficient than a report-like structure because the user's goal is purely transactional calculation, not reading static information. The interactive components provide instant feedback, facilitating quick cost exploration. -->
-    <!-- Visualization & Content Choices: Report Info -> Upgrade costs/chances. Goal -> Calculate expected cost. Presentation -> Interactive calculator with inputs, sliders, and buttons. Interaction -> Real-time updates on input change. Justification -> Provides a direct tool for the user's stated need. The breakdown table adds transparency to the calculation. The Chart.js stacked bar chart visually decomposes the total cost, making it easy to see which materials are most expensive. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f5f3f1;
-            color: #4a4a4a;
-        }
-        .card {
-            background-color: #ffffff;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            padding: 1.5rem;
-            transition: all 0.3s ease-in-out;
-        }
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            border: 1px solid transparent;
-        }
-        .btn-primary {
-            background-color: #8d7b68;
-            color: #ffffff;
-        }
-        .btn-primary:hover {
-            background-color: #7a6a58;
-        }
-        .btn-active {
-            background-color: #a4907c;
-            color: #ffffff;
-            box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
-            transform: translateY(-2px);
-        }
-        input[type="number"] {
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            padding: 0.5rem;
-            width: 100%;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #a4907c;
-            box-shadow: 0 0 0 2px rgba(164, 144, 124, 0.2);
-        }
-        .material-input-group label {
-            transition: color 0.2s ease-in-out, font-weight 0.2s ease-in-out;
-        }
-        .material-input-group input {
-            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
-        }
-        .material-input-group.highlighted label {
-            color: #8d7b68;
-            font-weight: 700;
-        }
-        .material-input-group.highlighted input {
-            border-color: #a4907c;
-            box-shadow: 0 0 0 2px rgba(164, 144, 124, 0.2);
-            background-color: #fefbf8;
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-        }
-         @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-        .slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #ffffff;
-            border: 2px solid #8d7b68;
-            cursor: pointer;
-            border-radius: 50%;
-            position: absolute;
-            z-index: 10;
-            transform: translateX(-50%);
-            top: 50%;
-            margin-top: -10px;
-        }
-        .slider-thumb:focus {
-             outline: none;
-             box-shadow: 0 0 0 4px rgba(164, 144, 124, 0.3);
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="min-h-screen p-4 sm:p-6 lg:p-8">
     <div class="max-w-7xl mx-auto">
@@ -124,49 +26,42 @@
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
                         <div class="material-input-group">
                             <label for="price-power" class="flex items-center text-sm font-medium text-gray-700">
-                                <img src="data:image/png;base64,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" class="w-5 h-5 mr-2">
                                 <span>威力</span>
                             </label>
                             <input type="number" id="price-power" value="100000" class="mt-1">
                         </div>
                         <div class="material-input-group">
                              <label for="price-stamina" class="flex items-center text-sm font-medium text-gray-700">
-                                <img src="data:image/png;base64,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" class="w-5 h-5 mr-2">
                                 <span>耐力</span>
                             </label>
                             <input type="number" id="price-stamina" value="100000" class="mt-1">
                         </div>
                         <div class="material-input-group">
                             <label for="price-focus" class="flex items-center text-sm font-medium text-gray-700">
-                                <img src="data:image/png;base64,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" class="w-5 h-5 mr-2">
                                 <span>專注</span>
                             </label>
                             <input type="number" id="price-focus" value="100000" class="mt-1">
                         </div>
                         <div class="material-input-group">
                            <label for="price-creation" class="flex items-center text-sm font-medium text-gray-700">
-                                <img src="data:image/png;base64,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" class="w-5 h-5 mr-2">
                                 <span>創造</span>
                             </label>
                             <input type="number" id="price-creation" value="100000" class="mt-1">
                         </div>
                         <div class="material-input-group">
                              <label for="price-sorcery" class="flex items-center text-sm font-medium text-gray-700">
-                                <img src="data:image/png;base64,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" class="w-5 h-5 mr-2">
                                 <span>咒術</span>
                             </label>
                             <input type="number" id="price-sorcery" value="100000" class="mt-1">
                         </div>
                         <div class="material-input-group">
                             <label for="price-wisdom" class="flex items-center text-sm font-medium text-gray-700">
-                                <img src="data:image/png;base64,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" class="w-5 h-5 mr-2">
                                 <span>智慧</span>
                             </label>
                             <input type="number" id="price-wisdom" value="100000" class="mt-1">
                         </div>
                         <div class="col-span-2 sm:col-span-3 lg:col-span-2 material-input-group">
                             <label for="price-unknown" class="flex items-center text-sm font-medium text-gray-700">
-                                <span class="w-5 h-5 mr-2"></span>
                                 <span>未知的</span>
                             </label>
                             <input type="number" id="price-unknown" value="200000" class="mt-1">
@@ -265,319 +160,6 @@
         </main>
     </div>
 
-<script>
-const ENCHANT_DATA = {
-    tenacity: {
-        name: '堅毅的星團',
-        levels: {
-            '2': { rate: 0.80, zeny: 500000, materials: { power: 5, focus: 4, wisdom: 5, unknown: 4 } },
-            '3': { rate: 0.65, zeny: 1000000, materials: { power: 10, focus: 8, wisdom: 10, unknown: 8 } },
-            '4': { rate: 0.45, zeny: 2000000, materials: { power: 20, focus: 16, wisdom: 20, unknown: 16 } },
-            '5': { rate: 0.25, zeny: 3500000, materials: { power: 35, focus: 28, wisdom: 35, unknown: 28 } },
-        }
-    },
-    fortune: {
-        name: '天運的星團',
-        levels: {
-            '2': { rate: 0.80, zeny: 500000, materials: { power: 4, creation: 5, sorcery: 5, unknown: 4 } },
-            '3': { rate: 0.65, zeny: 1000000, materials: { power: 8, creation: 10, sorcery: 10, unknown: 8 } },
-            '4': { rate: 0.45, zeny: 2000000, materials: { power: 16, creation: 20, sorcery: 20, unknown: 16 } },
-            '5': { rate: 0.25, zeny: 3500000, materials: { power: 28, creation: 35, sorcery: 35, unknown: 28 } },
-        }
-    },
-    wisdom: {
-        name: '賢明的星團',
-        levels: {
-            '2': { rate: 0.80, zeny: 500000, materials: { stamina: 5, focus: 4, sorcery: 5, unknown: 4 } },
-            '3': { rate: 0.65, zeny: 1000000, materials: { stamina: 10, focus: 8, sorcery: 10, unknown: 8 } },
-            '4': { rate: 0.45, zeny: 2000000, materials: { stamina: 20, focus: 16, sorcery: 20, unknown: 16 } },
-            '5': { rate: 0.25, zeny: 3500000, materials: { stamina: 35, focus: 28, sorcery: 35, unknown: 28 } },
-        }
-    },
-    defense: {
-        name: '抵禦的星團',
-        levels: {
-            '2': { rate: 0.80, zeny: 500000, materials: { stamina: 5, creation: 5, wisdom: 4, unknown: 4 } },
-            '3': { rate: 0.65, zeny: 1000000, materials: { stamina: 10, creation: 10, wisdom: 8, unknown: 8 } },
-            '4': { rate: 0.45, zeny: 2000000, materials: { stamina: 20, creation: 20, wisdom: 16, unknown: 16 } },
-            '5': { rate: 0.25, zeny: 3500000, materials: { stamina: 35, creation: 35, wisdom: 28, unknown: 28 } },
-        }
-    }
-};
-
-const MATERIAL_NAMES = {
-    power: '威力',
-    focus: '專注',
-    wisdom: '智慧',
-    creation: '創造',
-    sorcery: '咒術',
-    stamina: '耐力',
-    unknown: '未知'
-};
-
-const MATERIAL_ICONS = {
-    power: 'data:image/png;base64,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',
-    stamina: 'data:image/png;base64,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',
-    focus: 'data:image/png;base64,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',
-    creation: 'data:image/png;base64,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',
-    sorcery: 'data:image/png;base64,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',
-    wisdom: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAVDSURBVFhH1Zd7bBtVFMd/510/xEmcOE3iJJw0blp3jRvabjpA000oFBZEFhQpLQpUodpGUaoQoaiNIgEVKkSKoYiIKIKKoggoIuAokQiGSRgmcdzEcTzHcSf+dfb37b17T+v6M/2TS/K+t/d8557z3nPPPe/ZkYgY/2X/pYjZnh+Dkdqf/0/h9fV1L5fL/Xg8Psb+1l8sFv9YrVZ/KBR6n06nPwOQy+WeAISiKA8AsizbA+gGGIoB3wz45sC3/lPAn4VQVb8G/A0A09b+V7fCg+j1y/hDjp2g9/T03KxWq52lUnkI0F2gWq2+oVKpPB/4c6Ddbn+r2WzOZLNZ9y8A2r9b9T49P385Go0+AiiO4wC/AghFUbYB+wFhGDbA1wKmaZo/A/7uR280Gl1RKBQeBHwWUB74TcN+GvC5y+U+nU7nA0VRlgE/AzymaW4G7L8G/N/A91qt9p8A3wP6+/t/BvyN5ubmI+Fw+D7gE0DXdVeBnwF+GvD5u+++c3d5eTkwmUz2A34M+Lqu+3TgnwN+DfgbrVa7p1arsxMTEw9bLbD/RkR7e/ut/f39y3g8fkWv10/P5/MXgC4gEAg0+j8qZFn2S2AZ8DHgA+Pj44/39/c/kZGR8c6ePXuX6XT6bW3N+Q3w8+np6dPVavVDmqa30zT/K+B1IpH4pbm5+S/gScDtdv8u8EXAbsBnwI/X19enJycnH9rt9gPAk4DpdPpE4H3Aq6urE+Pj428D+gFjGDbFGBt5M+C3gD9qt9sf1Wp1f3Bw8F/gVwG7Ac+Fw+H7nZ2dX3w+3w+ADwIfB67rPsM+x+12+1fgH8N+I+C7ubl5uVKp/CfgXwB1dXW/dHZ29gzwCeDTwF8EPo1EIp9NJpP7AKcBk0nkVwFPBwYHB38IfB7IsmzHwG8A3W73VwH/CvhZKpV+Ffg9YE+z2fxuNBr9D/DbgP/h9/v3RkRE/J2ZmXkl8AXgw8DTgXv37n2nUqn8H3A+4Lrui4FfBTyRSFyWTCafDfx7oFar/w94K/ApLS3tO3/+/PdBENwD/BfwmqZ5K/BxwD/j5+fngyDIv+Fw+GbgH+Fw+D7gHcCj0ejf3t7en/3xxx/f7e/v/xN4H3Cmaf4p8DjgXwO/DxQKBX8gEPg74A/AsizbBXwe+DXgb7du3bp9y5YtW67r+q/A5wP+67ruU4HPA35z9+7dn+fn59dUV/MbwLeB3wUej8fvNjY2/gV4LpPJ/A74F8DX1NTUe/fu3dux2+1/B3wa+DXgTzzPexDwXyAIgo8A9wMe7m5uHnU6nZ9kMvmvga8B3gR88vf7/fU6nd7K5/N/B3wbMBrwA/7+/j+Ty+X+Dvg08F3gg4gGv8kF6Lru88BHAc/zvtXv958GfAvYCviFhYVFDw0NfRX4JuAfAU+Ty+X+jUaj7wA+CPwR8HhgGAb/L8BbwGfPnz9/45kzZw4hEPgW8D7gWbvd/lXgk8AnAZ9MTEw8AfgY8Luu+wzgU8DPgP8O/C/wr8CfAK+fO3fuJ3v27HkM8Fngs8A3AQ+3tra+4u7uPhz4DeBfAT8AfCgUCsXJycnPzc7OPt7b2/sA8D7gS8APAH8L+Avwq8DvAP8L/EHg88CH/f39y3v27Fn85MmTvwd+CfgU8IeAbwAf8jxviqLoHwD/BnwJ+CHg88CnwN8Hfgf4fOAr/f39y3Nzc49lMpmHga8CPgX8NfAPgd/q6urfeJ73A+CTgP8MfAr4I8Dfg/8E/DngN8AHwY+1tLQUhMNhc2Ji4neArwG/DPwI8EHgY8D/Q/4/mZubB11dXW8CHgd8CPgc8DHgx1arlc8yW1vblyeTyaeAzwJfBl4GvA98Gfgx8Bfgx8CHgb8M/ChwLpd7Wq1WLwH+GvhV4GfAx4BPAn4M/B/4JcBfwI+AzwI/AX8G3CgUnlprb+8P/FvgF8APgV8HPgz8GvgU8CvgJ4AfAX8G/Bj4CfiBv7//h1gsNhDwM+CP4P9p/D+F39k/gZ/oH5H311T/B7iT8fG1F53yAAAAAElFTkSuQmCC',
-};
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const MIN_LEVEL = 1;
-    const MAX_LEVEL = 5;
-
-    const priceInputs = {
-        power: document.getElementById('price-power'),
-        focus: document.getElementById('price-focus'),
-        wisdom: document.getElementById('price-wisdom'),
-        creation: document.getElementById('price-creation'),
-        sorcery: document.getElementById('price-sorcery'),
-        stamina: document.getElementById('price-stamina'),
-        unknown: document.getElementById('price-unknown'),
-    };
-
-    const outputs = {
-        levelDisplay: document.getElementById('level-display'),
-        totalCost: document.getElementById('total-cost'),
-        materialCost: document.getElementById('material-cost'),
-        zenyCost: document.getElementById('zeny-cost'),
-        detailsTableBody: document.getElementById('details-table-body'),
-        materialsTableBody: document.getElementById('materials-table-body'),
-    };
-
-    const clusterSelector = document.getElementById('cluster-selector');
-
-    let chart;
-    let selectedCluster = 'tenacity';
-    let startLevel = 1;
-    let endLevel = 5;
-
-    function formatNumber(num) {
-        return Math.round(num).toLocaleString('en-US');
-    }
-
-    function updateHighlights(clusterKey) {
-        document.querySelectorAll('.material-input-group').forEach(div => {
-            div.classList.remove('highlighted');
-        });
-        const clusterData = ENCHANT_DATA[clusterKey];
-        if (!clusterData) return;
-        const requiredMaterials = new Set();
-        for (const level in clusterData.levels) {
-            for (const material in clusterData.levels[level].materials) {
-                requiredMaterials.add(material);
-            }
-        }
-        requiredMaterials.forEach(material => {
-            const inputElement = document.getElementById(`price-${material}`);
-            if (inputElement) {
-                inputElement.closest('.material-input-group')?.classList.add('highlighted');
-            }
-        });
-    }
-
-    function calculate() {
-        const prices = Object.fromEntries(Object.entries(priceInputs).map(([key, input]) => [key, parseInt(input.value) || 0]));
-
-        const clusterData = ENCHANT_DATA[selectedCluster];
-        if (!clusterData) return;
-
-        outputs.levelDisplay.textContent = `Lv. ${startLevel} → Lv. ${endLevel}`;
-
-        let totalExpectedZeny = 0;
-        let totalExpectedMaterialCost = 0;
-        const totalMaterialCostsByType = {};
-        const oneTimeTotalMaterials = {};
-        const expectedTotalMaterials = {};
-
-        outputs.detailsTableBody.innerHTML = '';
-        if (startLevel >= endLevel) {
-            outputs.totalCost.textContent = `0 Zeny`;
-            outputs.materialCost.textContent = `0 Zeny`;
-            outputs.zenyCost.textContent = `0 Zeny`;
-            outputs.materialsTableBody.innerHTML = '';
-            updateChart(0, {});
-            return;
-        }
-
-        for (let level = startLevel + 1; level <= endLevel; level++) {
-            const levelData = clusterData.levels[level];
-            if (!levelData) continue;
-
-            const expectedAttempts = 1 / levelData.rate;
-            let materialCostPerAttempt = 0;
-            for (const mat in levelData.materials) {
-                const amount = levelData.materials[mat];
-                materialCostPerAttempt += amount * prices[mat];
-                oneTimeTotalMaterials[mat] = (oneTimeTotalMaterials[mat] || 0) + amount;
-                expectedTotalMaterials[mat] = (expectedTotalMaterials[mat] || 0) + (amount * expectedAttempts);
-            }
-
-            const zenyCostPerAttempt = levelData.zeny;
-            const expectedCostForLevel = (materialCostPerAttempt + zenyCostPerAttempt) * expectedAttempts;
-
-            totalExpectedZeny += zenyCostPerAttempt * expectedAttempts;
-            totalExpectedMaterialCost += materialCostPerAttempt * expectedAttempts;
-
-            for (const mat in levelData.materials) {
-                totalMaterialCostsByType[mat] = (totalMaterialCostsByType[mat] || 0) + (levelData.materials[mat] * prices[mat] * expectedAttempts);
-            }
-
-            const row = `
-                <tr class="border-b border-gray-200">
-                    <td class="p-2">Lv.${level-1} → Lv.${level}</td>
-                    <td class="p-2 text-right">${(levelData.rate * 100).toFixed(0)}%</td>
-                    <td class="p-2 text-right">${expectedAttempts.toFixed(2)}</td>
-                    <td class="p-2 text-right text-[#655a4c] font-medium">${formatNumber(expectedCostForLevel)}</td>
-                </tr>`;
-            outputs.detailsTableBody.insertAdjacentHTML('beforeend', row);
-        }
-
-        const totalCost = totalExpectedZeny + totalExpectedMaterialCost;
-        outputs.totalCost.textContent = `${formatNumber(totalCost)} Zeny`;
-        outputs.materialCost.textContent = `${formatNumber(totalExpectedMaterialCost)} Zeny`;
-        outputs.zenyCost.textContent = `${formatNumber(totalExpectedZeny)} Zeny`;
-
-        updateChart(totalExpectedZeny, totalMaterialCostsByType);
-
-        outputs.materialsTableBody.innerHTML = '';
-        const allMaterialsInCluster = new Set(Object.keys(oneTimeTotalMaterials));
-        const sortedMaterials = Array.from(allMaterialsInCluster).sort();
-
-        for (const mat of sortedMaterials) {
-            const oneTimeAmount = oneTimeTotalMaterials[mat] || 0;
-            const expectedAmount = expectedTotalMaterials[mat] || 0;
-            const iconSrc = MATERIAL_ICONS[mat];
-            const iconHtml = iconSrc
-                ? `<img src="${iconSrc}" class="w-5 h-5 mr-2 inline-block align-middle">`
-                : `<span class="inline-block w-5 h-5 mr-2"></span>`;
-
-            const row = `
-                <tr class="border-b border-gray-200 last:border-b-0">
-                    <td class="p-2 font-medium text-gray-800">
-                        <div class="flex items-center">
-                            ${iconHtml}
-                            <span>${MATERIAL_NAMES[mat]}</span>
-                        </div>
-                    </td>
-                    <td class="p-2 text-right">${formatNumber(oneTimeAmount)}</td>
-                    <td class="p-2 text-right text-[#655a4c] font-medium">${formatNumber(expectedAmount)}</td>
-                </tr>`;
-            outputs.materialsTableBody.insertAdjacentHTML('beforeend', row);
-        }
-    }
-
-    function updateChart(zenyCost, materialCosts) {
-        const labels = ['Zeny', ...Object.keys(materialCosts).map(key => MATERIAL_NAMES[key])];
-        const data = [zenyCost, ...Object.values(materialCosts)];
-        const backgroundColors = ['#6b7280', '#ef4444', '#3b82f6', '#eab308', '#8b5cf6', '#22c55e', '#10b981', '#f97316'];
-
-        if (chart) {
-            chart.data.labels = labels;
-            chart.data.datasets[0].data = data;
-            chart.data.datasets[0].backgroundColor = backgroundColors.slice(0, data.length);
-            chart.update();
-        } else {
-            const ctx = document.getElementById('cost-chart').getContext('2d');
-            chart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: '成本分佈',
-                        data: data,
-                        backgroundColor: backgroundColors.slice(0, data.length),
-                        borderColor: '#ffffff',
-                        borderWidth: 2,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { font: { family: "'Noto Sans TC', sans-serif" }}},
-                        tooltip: { callbacks: { label: ctx => `${ctx.label || ''}: ${formatNumber(ctx.parsed)} Zeny` }}
-                    }
-                }
-            });
-        }
-    }
-
-    function setupDualSlider() {
-        const container = document.getElementById('level-slider-container');
-        const thumbStart = document.getElementById('slider-thumb-start');
-        const thumbEnd = document.getElementById('slider-thumb-end');
-        const progress = document.getElementById('slider-progress');
-
-        function updateSliderUI() {
-            const range = MAX_LEVEL - MIN_LEVEL;
-            const startPercent = ((startLevel - MIN_LEVEL) / range) * 100;
-            const endPercent = ((endLevel - MIN_LEVEL) / range) * 100;
-
-            thumbStart.style.left = `${startPercent}%`;
-            thumbEnd.style.left = `${endPercent}%`;
-            progress.style.left = `${startPercent}%`;
-            progress.style.width = `${endPercent - startPercent}%`;
-            outputs.levelDisplay.textContent = `Lv. ${startLevel} → Lv. ${endLevel}`;
-        }
-
-        function handleMove(e, thumb) {
-            const rect = container.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const percent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
-            const level = Math.round((percent / 100) * (MAX_LEVEL - MIN_LEVEL)) + MIN_LEVEL;
-
-            if (thumb === thumbStart) {
-                startLevel = Math.min(level, endLevel);
-            } else {
-                endLevel = Math.max(level, startLevel);
-            }
-            updateSliderUI();
-            calculate();
-        }
-
-        function startDrag(e, thumb) {
-            e.preventDefault();
-            const onMove = (moveEvent) => handleMove(moveEvent, thumb);
-            const onEnd = () => {
-                document.removeEventListener('mousemove', onMove);
-                document.removeEventListener('mouseup', onEnd);
-                document.removeEventListener('touchmove', onMove);
-                document.removeEventListener('touchend', onEnd);
-            };
-            document.addEventListener('mousemove', onMove);
-            document.addEventListener('mouseup', onEnd);
-            document.addEventListener('touchmove', onMove);
-            document.addEventListener('touchend', onEnd);
-        }
-
-        thumbStart.addEventListener('mousedown', (e) => startDrag(e, thumbStart));
-        thumbEnd.addEventListener('mousedown', (e) => startDrag(e, thumbEnd));
-        thumbStart.addEventListener('touchstart', (e) => startDrag(e, thumbStart));
-        thumbEnd.addEventListener('touchstart', (e) => startDrag(e, thumbEnd));
-
-        updateSliderUI();
-    }
-
-    Object.values(priceInputs).forEach(input => input.addEventListener('input', calculate));
-    clusterSelector.addEventListener('click', (e) => {
-        if (e.target.tagName === 'BUTTON') {
-            document.querySelectorAll('#cluster-selector button').forEach(btn => btn.classList.remove('btn-active'));
-            e.target.classList.add('btn-active');
-            selectedCluster = e.target.dataset.cluster;
-            updateHighlights(selectedCluster);
-            calculate();
-        }
-    });
-
-    setupDualSlider();
-    updateHighlights(selectedCluster);
-    calculate();
-});
-</script>
+<script src="script.js"></script>
 </body>
 </html>
-
