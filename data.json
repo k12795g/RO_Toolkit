@@ -1,0 +1,144 @@
+{
+    "materials": {
+        "power_fragment": "威力隕石碎片",
+        "stamina_fragment": "耐力隕石碎片",
+        "focus_fragment": "專注隕石碎片",
+        "creation_fragment": "創造隕石碎片",
+        "wisdom_fragment": "智慧隕石碎片",
+        "sorcery_fragment": "咒術隕石碎片",
+        "unknown_fragment": "未知的隕石碎片",
+        "meteorite_fragment": "隕石碎片",
+        "yeshengmo_bead": "夜勝魔靈珠",
+        "betelgeuse_bead": "參宿四靈珠",
+        "power_dust": "威力隕石浮塵",
+        "stamina_dust": "耐力隕石浮塵",
+        "focus_dust": "專注隕石浮塵",
+        "creation_dust": "創造隕石浮塵",
+        "wisdom_dust": "智慧隕石浮塵",
+        "sorcery_dust": "咒術隕石浮塵",
+        "generic_dust": "隕石浮塵(通用)"
+    },
+    "calculators": [
+        {
+            "id": "craft_badge",
+            "name": "製作徽章",
+            "type": "craft",
+            "steps": [
+                {
+                    "id": "base_badge",
+                    "name": "星際徽章",
+                    "zeny": 0,
+                    "materials": {
+                        "meteorite_fragment": 100,
+                        "yeshengmo_bead": 10
+                    }
+                },
+                {
+                    "id": "advanced_badge",
+                    "name": "進階徽章",
+                    "zeny": 0,
+                    "variants": {
+                        "power": {
+                            "name": "星際威力徽章",
+                            "materials": { "power_dust": 50 }
+                        },
+                        "stamina": {
+                            "name": "星際耐力徽章",
+                            "materials": { "stamina_dust": 50 }
+                        },
+                        "focus": {
+                            "name": "星際專注徽章",
+                            "materials": { "focus_dust": 50 }
+                        },
+                        "creation": {
+                            "name": "星際創造徽章",
+                            "materials": { "creation_dust": 50 }
+                        },
+                        "wisdom": {
+                            "name": "星際智慧徽章",
+                            "materials": { "wisdom_dust": 50 }
+                        },
+                        "sorcery": {
+                            "name": "星際咒術徽章",
+                            "materials": { "sorcery_dust": 50 }
+                        }
+                    },
+                    "common_materials": {
+                        "meteorite_fragment": 250,
+                        "betelgeuse_bead": 20,
+                        "base_badge": 1
+                    }
+                }
+            ]
+        },
+        {
+            "id": "enchant_3_4",
+            "name": "第三、四洞附魔",
+            "type": "enchant-gacha",
+            "costs": {
+                "slot4": { "zeny": 300000, "materials": { "meteorite_fragment": 5 } },
+                "slot3": { "zeny": 500000, "materials": { "meteorite_fragment": 10 } }
+            },
+            "enchants": {
+                "fighting_spirit": { "name": "鬥志", "levels": { "3": 0.1005, "4": 0.0175 } },
+                "sharp": { "name": "尖銳", "levels": { "3": 0.1005, "4": 0.0175 } },
+                "famous_bow": { "name": "名弓", "levels": { "3": 0.1005, "4": 0.0175 } },
+                "magic_power": { "name": "魔力", "levels": { "3": 0.10, "4": 0.0175 } },
+                "starlight_domineering": { "name": "霸氣星光", "levels": { "1": 0.04, "2": 0.02, "3": 0.0125, "4": 0.0025, "5": 0.0005 } },
+                "starlight_precision_bow": { "name": "精弓星光", "levels": { "1": 0.04, "2": 0.02, "3": 0.0125, "4": 0.0025, "5": 0.0005 } },
+                "starlight_sharp": { "name": "尖銳星光", "levels": { "1": 0.04, "2": 0.02, "3": 0.0125, "4": 0.0025, "5": 0.0005 } },
+                "starlight_magic_power": { "name": "魔力星光", "levels": { "1": 0.04, "2": 0.02, "3": 0.0125, "4": 0.0025, "5": 0.0005 } },
+                "starlight_speed": { "name": "速度星光", "levels": { "1": 0.04, "2": 0.02, "3": 0.0125, "4": 0.0025, "5": 0.0005 } },
+                "starlight_stamina": { "name": "體力星光", "levels": { "1": 0.04, "2": 0.02, "3": 0.0125, "4": 0.0025, "5": 0.0005 } },
+                "starlight_spirit": { "name": "精神星光", "levels": { "1": 0.04, "2": 0.02, "3": 0.0125, "4": 0.0025, "5": 0.0005 } }
+            }
+        },
+        {
+            "id": "enchant_2",
+            "name": "第二洞附魔",
+            "type": "enchant-upgrade",
+            "clusters": {
+                "tenacity": {
+                    "name": "堅毅的星團",
+                    "levels": {
+                        "1": { "rate": 1, "zeny": 5000000, "materials": { "power_fragment": 15, "focus_fragment": 10, "wisdom_fragment": 15, "unknown_fragment": 20 } },
+                        "2": { "rate": 0.8, "zeny": 500000, "materials": { "power_fragment": 5, "focus_fragment": 4, "wisdom_fragment": 5, "unknown_fragment": 4 } },
+                        "3": { "rate": 0.65, "zeny": 1000000, "materials": { "power_fragment": 10, "focus_fragment": 8, "wisdom_fragment": 10, "unknown_fragment": 8 } },
+                        "4": { "rate": 0.45, "zeny": 2000000, "materials": { "power_fragment": 20, "focus_fragment": 16, "wisdom_fragment": 20, "unknown_fragment": 16 } },
+                        "5": { "rate": 0.25, "zeny": 3500000, "materials": { "power_fragment": 35, "focus_fragment": 28, "wisdom_fragment": 35, "unknown_fragment": 28 } }
+                    }
+                },
+                "fortune": {
+                    "name": "天運的星團",
+                    "levels": {
+                        "1": { "rate": 1, "zeny": 5000000, "materials": { "power_fragment": 15, "creation_fragment": 10, "sorcery_fragment": 15, "unknown_fragment": 20 } },
+                        "2": { "rate": 0.8, "zeny": 500000, "materials": { "power_fragment": 4, "creation_fragment": 5, "sorcery_fragment": 5, "unknown_fragment": 4 } },
+                        "3": { "rate": 0.65, "zeny": 1000000, "materials": { "power_fragment": 8, "creation_fragment": 10, "sorcery_fragment": 10, "unknown_fragment": 8 } },
+                        "4": { "rate": 0.45, "zeny": 2000000, "materials": { "power_fragment": 16, "creation_fragment": 20, "sorcery_fragment": 20, "unknown_fragment": 16 } },
+                        "5": { "rate": 0.25, "zeny": 3500000, "materials": { "power_fragment": 28, "creation_fragment": 35, "sorcery_fragment": 35, "unknown_fragment": 28 } }
+                    }
+                },
+                "wisdom": {
+                    "name": "賢明的星團",
+                    "levels": {
+                        "1": { "rate": 1, "zeny": 5000000, "materials": { "stamina_fragment": 15, "focus_fragment": 10, "sorcery_fragment": 15, "unknown_fragment": 20 } },
+                        "2": { "rate": 0.8, "zeny": 500000, "materials": { "stamina_fragment": 5, "focus_fragment": 4, "sorcery_fragment": 5, "unknown_fragment": 4 } },
+                        "3": { "rate": 0.65, "zeny": 1000000, "materials": { "stamina_fragment": 10, "focus_fragment": 8, "sorcery_fragment": 10, "unknown_fragment": 8 } },
+                        "4": { "rate": 0.45, "zeny": 2000000, "materials": { "stamina_fragment": 20, "focus_fragment": 16, "sorcery_fragment": 20, "unknown_fragment": 16 } },
+                        "5": { "rate": 0.25, "zeny": 3500000, "materials": { "stamina_fragment": 35, "focus_fragment": 28, "sorcery_fragment": 35, "unknown_fragment": 28 } }
+                    }
+                },
+                "defense": {
+                    "name": "抵禦的星團",
+                    "levels": {
+                        "1": { "rate": 1, "zeny": 5000000, "materials": { "stamina_fragment": 15, "creation_fragment": 10, "wisdom_fragment": 15, "unknown_fragment": 20 } },
+                        "2": { "rate": 0.8, "zeny": 500000, "materials": { "stamina_fragment": 5, "creation_fragment": 5, "wisdom_fragment": 4, "unknown_fragment": 4 } },
+                        "3": { "rate": 0.65, "zeny": 1000000, "materials": { "stamina_fragment": 10, "creation_fragment": 10, "wisdom_fragment": 8, "unknown_fragment": 8 } },
+                        "4": { "rate": 0.45, "zeny": 2000000, "materials": { "stamina_fragment": 20, "creation_fragment": 20, "wisdom_fragment": 16, "unknown_fragment": 16 } },
+                        "5": { "rate": 0.25, "zeny": 3500000, "materials": { "stamina_fragment": 35, "creation_fragment": 35, "wisdom_fragment": 28, "unknown_fragment": 28 } }
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>星際徽章附魔成本計算機</title>
+    <title>星際徽章製作計算機</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,149 +14,35 @@
 <body class="min-h-screen p-4 sm:p-6 lg:p-8">
     <div class="max-w-7xl mx-auto">
         <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-[#655a4c]">星際徽章附魔成本計算機</h1>
-            <p class="mt-2 text-md md:text-lg text-gray-600">輸入材料價格，選擇目標星團與等級，即時計算附魔期望成本。</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-[#655a4c]">星際徽章製作計算機</h1>
         </header>
 
-        <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-1 flex flex-col gap-6">
-                <section id="price-settings" class="card">
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">1. 材料價格設定</h2>
-                     <p class="text-sm text-gray-500 mb-4">請在此輸入您伺服器中各項隕石碎片的單價(Zeny)。</p>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
-                        <div class="material-input-group">
-                            <label for="price-power" class="flex items-center text-sm font-medium text-gray-700">
-                                <span>威力</span>
-                            </label>
-                            <input type="number" id="price-power" value="100000" class="mt-1">
-                        </div>
-                        <div class="material-input-group">
-                             <label for="price-stamina" class="flex items-center text-sm font-medium text-gray-700">
-                                <span>耐力</span>
-                            </label>
-                            <input type="number" id="price-stamina" value="100000" class="mt-1">
-                        </div>
-                        <div class="material-input-group">
-                            <label for="price-focus" class="flex items-center text-sm font-medium text-gray-700">
-                                <span>專注</span>
-                            </label>
-                            <input type="number" id="price-focus" value="100000" class="mt-1">
-                        </div>
-                        <div class="material-input-group">
-                           <label for="price-creation" class="flex items-center text-sm font-medium text-gray-700">
-                                <span>創造</span>
-                            </label>
-                            <input type="number" id="price-creation" value="100000" class="mt-1">
-                        </div>
-                        <div class="material-input-group">
-                             <label for="price-sorcery" class="flex items-center text-sm font-medium text-gray-700">
-                                <span>咒術</span>
-                            </label>
-                            <input type="number" id="price-sorcery" value="100000" class="mt-1">
-                        </div>
-                        <div class="material-input-group">
-                            <label for="price-wisdom" class="flex items-center text-sm font-medium text-gray-700">
-                                <span>智慧</span>
-                            </label>
-                            <input type="number" id="price-wisdom" value="100000" class="mt-1">
-                        </div>
-                        <div class="col-span-2 sm:col-span-3 lg:col-span-2 material-input-group">
-                            <label for="price-unknown" class="flex items-center text-sm font-medium text-gray-700">
-                                <span>未知的</span>
-                            </label>
-                            <input type="number" id="price-unknown" value="200000" class="mt-1">
-                        </div>
-                    </div>
-                </section>
-
-                <section id="calculation-controls" class="card">
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">2. 計算目標設定</h2>
-                    <div class="space-y-6">
-                        <div>
-                            <h3 class="text-md font-semibold text-gray-800 mb-2">選擇星團</h3>
-                            <div id="cluster-selector" class="grid grid-cols-2 gap-2">
-                                <button data-cluster="tenacity" class="btn btn-primary btn-active">堅毅的星團</button>
-                                <button data-cluster="fortune" class="btn btn-primary">天運的星團</button>
-                                <button data-cluster="wisdom" class="btn btn-primary">賢明的星團</button>
-                                <button data-cluster="defense" class="btn btn-primary">抵禦的星團</button>
-                            </div>
-                        </div>
-                        <div>
-                            <h3 class="text-md font-semibold text-gray-800 mb-2">目標等級範圍: <span id="level-display" class="font-bold text-[#a4907c]">Lv. 1 → Lv. 5</span></h3>
-                            <div class="pt-4">
-                               <div id="level-slider-container" class="relative w-full h-5">
-                                    <div class="absolute w-full h-1.5 bg-gray-200 rounded-full top-1/2 -translate-y-1/2"></div>
-                                    <div id="slider-progress" class="absolute h-1.5 bg-[#a4907c] rounded-full top-1/2 -translate-y-1/2"></div>
-                                    <div id="slider-thumb-start" class="slider-thumb" tabindex="0"></div>
-                                    <div id="slider-thumb-end" class="slider-thumb" tabindex="0"></div>
-                                    <div class="absolute w-full flex justify-between -bottom-5 text-xs text-gray-500">
-                                        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="material-requirements" class="card">
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">3. 材料需求分析</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left">
-                            <thead class="bg-gray-50 text-gray-600">
-                                <tr>
-                                    <th class="p-2">材料</th>
-                                    <th class="p-2 text-right">單次總量</th>
-                                    <th class="p-2 text-right">期望總量</th>
-                                </tr>
-                            </thead>
-                            <tbody id="materials-table-body">
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+        <!-- Final Goal Settings -->
+        <section id="final-goal-settings" class="card mb-6">
+            <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">目標設定</h2>
+            <div id="final-goal-inputs-container" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <!-- Final goal dropdowns will be dynamically inserted here -->
             </div>
+        </section>
 
-            <div class="lg:col-span-2 flex flex-col gap-6">
-                 <section id="results-summary" class="card text-center">
-                    <h2 class="text-xl font-bold mb-2 text-[#8d7b68]">預期總成本</h2>
-                    <p id="total-cost" class="text-4xl font-bold text-gray-800">0 Zeny</p>
-                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                        <div>
-                            <h3 class="font-semibold">材料成本</h3>
-                            <p id="material-cost" class="text-lg text-[#a4907c]">0 Zeny</p>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold">Zeny 成本</h3>
-                            <p id="zeny-cost" class="text-lg text-[#a4907c]">0 Zeny</p>
-                        </div>
-                    </div>
-                </section>
-
-                <div class="card">
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">成本分佈圖</h2>
-                     <div class="chart-container">
-                        <canvas id="cost-chart"></canvas>
-                    </div>
-                </div>
-
-                <section id="results-details" class="card">
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">成本明細</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full min-w-max text-sm text-left">
-                            <thead class="bg-gray-50 text-gray-600">
-                                <tr>
-                                    <th class="p-2">升級階段</th>
-                                    <th class="p-2 text-right">成功率</th>
-                                    <th class="p-2 text-right">預期次數</th>
-                                    <th class="p-2 text-right">期望成本</th>
-                                </tr>
-                            </thead>
-                            <tbody id="details-table-body">
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+        <!-- Global Price Settings -->
+        <section id="price-settings" class="card mb-6">
+            <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">材料價格</h2>
+            <div id="material-inputs-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <!-- Global material inputs will be dynamically inserted here -->
             </div>
+        </section>
+
+        <!-- Tab Navigation -->
+        <div class="mb-6">
+            <div id="tab-container" class="flex border-b border-gray-300">
+                <!-- Tab buttons will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Tab Content -->
+        <main id="tab-content-container">
+            <!-- Calculator content will be dynamically inserted here -->
         </main>
     </div>
 

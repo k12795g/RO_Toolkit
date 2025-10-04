@@ -91,3 +91,33 @@ body {
              outline: none;
              box-shadow: 0 0 0 4px rgba(164, 144, 124, 0.3);
         }
+
+        #price-settings input[type="number"] {
+            width: 9rem;
+        }
+
+        /* Stepper Tab Styles */
+        #tab-container {
+            border-bottom: none;
+        }
+        .tab-btn {
+            position: relative;
+            margin-right: 1.5rem; /* Space for the arrow */
+            padding-right: 1.5rem; 
+            border-radius: 0.25rem; /* Slightly less rounded */
+            clip-path: polygon(0% 0%, calc(100% - 1rem) 0%, 100% 50%, calc(100% - 1rem) 100%, 0% 100%);
+        }
+
+        .tab-btn:last-of-type {
+            margin-right: 0;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); /* A regular rectangle for the last button */
+        }
+
+        .tab-btn.btn-active {
+            transform: none; /* Disable the lift effect for active stepper */
+            box-shadow: none;
+        }
+
+        .hidden {
+            display: none;
+        }
