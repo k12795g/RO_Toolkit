@@ -275,7 +275,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function renderGachaCalculator(calculator) {
         dom.tabContentContainer.innerHTML = `
-            <section class="card text-center"><h2 class="text-xl font-bold mb-2 text-[#8d7b68]">預期成本</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center"><div><h3 class="font-semibold">第四洞</h3><p id="gacha-cost-slot4" class="text-2xl font-bold text-gray-800">0 Zeny</p><p id="gacha-resets-slot4" class="text-xs text-gray-500"></p></div><div><h3 class="font-semibold">第三洞</h3><p id="gacha-cost-slot3" class="text-2xl font-bold text-gray-800">0 Zeny</p><p id="gacha-resets-slot3" class="text-xs text-gray-500"></p></div><div><h3 class="font-semibold text-[#655a4c]">總計</h3><p id="gacha-total-cost" class="text-3xl font-bold text-[#655a4c]">0 Zeny</p></div></div></section>
+            <section class="card text-center">
+                <h2 class="text-xl font-bold mb-2 text-[#8d7b68]">預期成本</h2>
+                <p id="gacha-total-cost" class="text-4xl font-bold text-gray-800">0 Zeny</p>
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+                    <div>
+                        <h3 class="font-semibold">第四洞</h3>
+                        <p id="gacha-cost-slot4" class="text-lg text-[#a4907c]">0 Zeny</p>
+                        <p id="gacha-resets-slot4" class="text-xs text-gray-500"></p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold">第三洞</h3>
+                        <p id="gacha-cost-slot3" class="text-lg text-[#a4907c]">0 Zeny</p>
+                        <p id="gacha-resets-slot3" class="text-xs text-gray-500"></p>
+                    </div>
+                </div>
+            </section>
             <section class="card mt-6"><h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">材料需求</h2><div class="overflow-x-auto"><table class="w-full text-sm text-left"><thead class="bg-gray-50 text-gray-600"><tr><th class="p-2">材料</th><th class="p-2 text-right">期望總量</th></tr></thead><tbody id="gacha-materials-table-body"></tbody></table></div></section>
         `;
         calculateGachaCost(calculator);
@@ -288,11 +303,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         const prob3 = calculator.enchants[target3.key]?.levels[target3.level];
 
         if (!prob4 || !prob3) {
-            if(!returnResult) { /* ... UI error handling ... */ }
+            if(!returnResult) {
+                document.getElementById('gacha-cost-slot4').textContent = '請先設定目標';
+                document.getElementById('gacha-cost-slot3').textContent = '請先設定目標';
+                document.getElementById('gacha-total-cost').textContent = '-';
+            }
             return null;
         }
 
-        const resetCostDef = { zeny: 500000, materials: { generic_dust: 30 } };
+        const resetAttemptCost = { zeny: 500000, materials: { generic_dust: 30 } };
+        const resetSuccessRate = 0.8;
         const getZenyValue = (materials) => {
             let zeny = 0;
             for (const [mat, qty] of Object.entries(materials)) {
@@ -302,19 +322,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             return zeny;
         };
 
+        const expectedResetCostZeny = (resetAttemptCost.zeny + getZenyValue(resetAttemptCost.materials)) / resetSuccessRate;
+        const expectedResetMaterials = {};
+        for (const [mat, qty] of Object.entries(resetAttemptCost.materials)) {
+            expectedResetMaterials[mat] = qty / resetSuccessRate;
+        }
+
         const pullCost4Zeny = calculator.costs.slot4.zeny + getZenyValue(calculator.costs.slot4.materials);
-        const resetCostZeny = resetCostDef.zeny + getZenyValue(resetCostDef.materials);
-        const actionCost4Zeny = pullCost4Zeny + (1 - prob4) * resetCostZeny;
+        const actionCost4Zeny = pullCost4Zeny + (1 - prob4) * expectedResetCostZeny;
         const totalExpectedZeny4 = actionCost4Zeny / prob4;
 
         const totalExpectedMaterials4 = {};
         const expectedPulls4 = 1 / prob4;
         for (const [mat, qty] of Object.entries(calculator.costs.slot4.materials)) totalExpectedMaterials4[mat] = (totalExpectedMaterials4[mat] || 0) + expectedPulls4 * qty;
         const failedPulls4 = expectedPulls4 * (1 - prob4);
-        for (const [mat, qty] of Object.entries(resetCostDef.materials)) totalExpectedMaterials4[mat] = (totalExpectedMaterials4[mat] || 0) + failedPulls4 * qty;
+        for (const [mat, qty] of Object.entries(expectedResetMaterials)) {
+            totalExpectedMaterials4[mat] = (totalExpectedMaterials4[mat] || 0) + failedPulls4 * qty;
+        }
 
         const pullCost3Zeny = calculator.costs.slot3.zeny + getZenyValue(calculator.costs.slot3.materials);
-        const failureCost3Zeny = resetCostZeny + totalExpectedZeny4;
+        const failureCost3Zeny = expectedResetCostZeny + totalExpectedZeny4;
         const actionCost3Zeny = pullCost3Zeny + (1 - prob3) * failureCost3Zeny;
         const totalExpectedZeny3 = actionCost3Zeny / prob3;
 
@@ -325,15 +352,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         const expectedPulls3 = 1 / prob3;
         for (const [mat, qty] of Object.entries(calculator.costs.slot3.materials)) totalMaterials[mat] = (totalMaterials[mat] || 0) + expectedPulls3 * qty;
         const failedPulls3 = expectedPulls3 * (1 - prob3);
-        for (const [mat, qty] of Object.entries(resetCostDef.materials)) totalMaterials[mat] = (totalMaterials[mat] || 0) + failedPulls3 * qty;
-        for (const [mat, qty] of Object.entries(totalExpectedMaterials4)) totalMaterials[mat] = (totalMaterials[mat] || 0) + failedPulls3 * qty;
+        for (const [mat, qty] of Object.entries(expectedResetMaterials)) {
+            totalMaterials[mat] = (totalMaterials[mat] || 0) + failedPulls3 * qty;
+        }
+        for (const [mat, qty] of Object.entries(totalExpectedMaterials4)) {
+            totalMaterials[mat] = (totalMaterials[mat] || 0) + failedPulls3 * qty;
+        }
 
         if (returnResult) return { totalZeny: grandTotalZeny, totalMaterials };
 
+        const resets4_per_run = (1 / prob4) * (1 - prob4);
+        const totalResets4 = (1 / prob3) * resets4_per_run;
+        const totalResets3 = (1 / prob3) * (1 - prob3);
+
         document.getElementById('gacha-cost-slot4').textContent = `${formatNumber(totalExpectedZeny4)} Zeny`;
-        document.getElementById('gacha-resets-slot4').textContent = `(預期重置 ${((1 / prob3) * failedPulls4).toFixed(2)} 次)`;
+        document.getElementById('gacha-resets-slot4').textContent = `(預期重置 ${totalResets4.toFixed(2)} 次)`;
         document.getElementById('gacha-cost-slot3').textContent = `${formatNumber(totalExpectedZeny3)} Zeny`;
-        document.getElementById('gacha-resets-slot3').textContent = `(預期重置 ${failedPulls3.toFixed(2)} 次)`;
+        document.getElementById('gacha-resets-slot3').textContent = `(預期重置 ${totalResets3.toFixed(2)} 次)`;
         document.getElementById('gacha-total-cost').textContent = `${formatNumber(grandTotalZeny)} Zeny`;
 
         const materialsTableBody = document.getElementById('gacha-materials-table-body');
@@ -344,29 +379,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function renderUpgradeCalculator(calculator) {
-        dom.tabContentContainer.innerHTML = `<div class="flex flex-col gap-6">
-                 <section class="card">
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">計算目標設定</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h3 class="text-md font-semibold text-gray-800 mb-2">選擇星團</h3>
-                            <p class="p-2 border rounded-md bg-gray-100">${calculator.clusters[finalGoal.upgrade_cluster].name}</p>
-                        </div>
-                        <div>
-                            <h3 class="text-md font-semibold text-gray-800 mb-2">目標等級範圍: <span id="upgrade-level-display"></span></h3>
-                            <div class="pt-4"><div id="level-slider-container" class="relative w-full h-5">
-                                <div class="absolute w-full h-1.5 bg-gray-200 rounded-full top-1/2 -translate-y-1/2"></div>
-                                <div id="slider-progress" class="absolute h-1.5 bg-[#a4907c] rounded-full top-1/2 -translate-y-1/2"></div>
-                                <div id="slider-thumb-start" class="slider-thumb" tabindex="0"></div><div id="slider-thumb-end" class="slider-thumb" tabindex="0"></div>
-                                <div class="absolute w-full flex justify-between -bottom-5 text-xs text-gray-500"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
-                            </div></div>
-                        </div>
+        dom.tabContentContainer.innerHTML = `
+            <section class="card text-center"><h2 class="text-xl font-bold mb-2 text-[#8d7b68]">預期成本</h2><p id="upgrade-total-cost" class="text-4xl font-bold text-gray-800">0 Zeny</p><div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-center"><div><h3 class="font-semibold">材料成本</h3><p id="upgrade-material-cost" class="text-lg text-[#a4907c]">0 Zeny</p></div><div><h3 class="font-semibold">Zeny 成本</h3><p id="upgrade-zeny-cost" class="text-lg text-[#a4907c]">0 Zeny</p></div></div></section>
+            <div class="card mt-6">
+                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">計算目標設定</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-md font-semibold text-gray-800 mb-2">選擇星團</h3>
+                        <p class="p-2 border rounded-md bg-gray-100">${calculator.clusters[finalGoal.upgrade_cluster].name}</p>
                     </div>
-                </section>
-                <section class="card text-center"><h2 class="text-xl font-bold mb-2 text-[#8d7b68]">預期成本</h2><p id="upgrade-total-cost" class="text-4xl font-bold text-gray-800">0 Zeny</p><div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-left"><div><h3 class="font-semibold">材料成本</h3><p id="upgrade-material-cost" class="text-lg text-[#a4907c]">0 Zeny</p></div><div><h3 class="font-semibold">Zeny 成本</h3><p id="upgrade-zeny-cost" class="text-lg text-[#a4907c]">0 Zeny</p></div></div></section>
-                <section class="card"><h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">材料需求</h2><div class="overflow-x-auto"><table class="w-full text-sm text-left"><thead class="bg-gray-50 text-gray-600"><tr><th class="p-2">材料</th><th class="p-2 text-right">單次總量</th><th class="p-2 text-right">期望總量</th></tr></thead><tbody id="upgrade-materials-table-body"></tbody></table></div></section>
-                <section class="card"><h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">成本明細</h2><div class="overflow-x-auto"><table class="w-full min-w-max text-sm text-left"><thead class="bg-gray-50 text-gray-600"><tr><th class="p-2">升級階段</th><th class="p-2 text-right">成功率</th><th class="p-2 text-right">預期次數</th><th class="p-2 text-right">期望成本</th></tr></thead><tbody id="upgrade-details-table-body"></tbody></table></div></section>
+                    <div>
+                        <h3 class="text-md font-semibold text-gray-800 mb-2">目標等級範圍: <span id="upgrade-level-display"></span></h3>
+                        <div class="pt-4"><div id="level-slider-container" class="relative w-full h-5">
+                            <div class="absolute w-full h-1.5 bg-gray-200 rounded-full top-1/2 -translate-y-1/2"></div>
+                            <div id="slider-progress" class="absolute h-1.5 bg-[#a4907c] rounded-full top-1/2 -translate-y-1/2"></div>
+                            <div id="slider-thumb-start" class="slider-thumb" tabindex="0"></div><div id="slider-thumb-end" class="slider-thumb" tabindex="0"></div>
+                            <div class="absolute w-full flex justify-between -bottom-5 text-xs text-gray-500"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+                        </div></div>
+                    </div>
+                </div>
             </div>
+            <section class="card mt-6"><h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">材料需求</h2><div class="overflow-x-auto"><table class="w-full text-sm text-left"><thead class="bg-gray-50 text-gray-600"><tr><th class="p-2">材料</th><th class="p-2 text-right">單次總量</th><th class="p-2 text-right">期望總量</th></tr></thead><tbody id="upgrade-materials-table-body"></tbody></table></div></section>
+            <section class="card mt-6"><h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">成本明細</h2><div class="overflow-x-auto"><table class="w-full min-w-max text-sm text-left"><thead class="bg-gray-50 text-gray-600"><tr><th class="p-2">升級階段</th><th class="p-2 text-right">成功率</th><th class="p-2 text-right">預期次數</th><th class="p-2 text-right">期望成本</th></tr></thead><tbody id="upgrade-details-table-body"></tbody></table></div></section>
         `;
         
         setupDualSlider(calculator);
@@ -405,7 +439,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (returnResult) return { totalZeny, totalMaterials };
 
-        document.getElementById('upgrade-level-display').textContent = `Lv. ${startLevel} → Lv. ${endLevel}`;
         document.getElementById('upgrade-total-cost').textContent = `${formatNumber(totalZeny)} Zeny`;
         document.getElementById('upgrade-material-cost').textContent = `${formatNumber(totalMaterialZeny)} Zeny`;
         document.getElementById('upgrade-zeny-cost').textContent = `${formatNumber(totalExpectedZeny)} Zeny`;
@@ -486,7 +519,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderSummaryPage() {
         dom.tabContentContainer.innerHTML = `
             <section class="card">
-                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">最終目標總覽</h2>
+                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">預期成本</h2>
+                <div class="text-center mb-6">
+                    <p id="summary-total-zeny" class="text-4xl font-bold text-gray-800">0 Zeny</p>
+                </div>
+                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">計算範圍</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div>
                         <label for="summary-start-stage" class="text-sm font-medium">起始階段</label>
@@ -497,10 +534,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <select id="summary-end-stage" class="w-full p-2 border rounded-md mt-1"></select>
                     </div>
                 </div>
+                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-[#8d7b68]">材料需求</h2>
                 <div id="summary-materials-list" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
-                <div class="text-right mt-6 border-t pt-4">
-                    <p class="text-xl font-bold">預期成本: <span id="summary-total-zeny" class="text-2xl text-[#655a4c]">0 Zeny</span></p>
-                </div>
             </section>
         `;
         
@@ -538,7 +573,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const gachaCalc = appData.calculators.find(c => c.type === 'enchant-gacha');
         const upgradeCalc = appData.calculators.find(c => c.type === 'enchant-upgrade');
 
-        const stageOrder = {craft: 1, gacha: 3, upgrade: 4};
+        const stageOrder = {craft: 1, gacha: 2, upgrade: 3};
 
         if (startStage <= stageOrder.craft && endStage >= stageOrder.craft) {
             const craftResult = calculateCraftCost(craftCalc, true);
